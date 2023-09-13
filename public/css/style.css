@@ -238,6 +238,9 @@ hr {
 	filter:alpha(opacity=60);
 	opacity: 0.6;
 }
+#sidebar ul {
+	list-style-type: none;
+}
 /** testimonials **/
 #contents div#testimonials h3 {
 	color: #2c9688;
