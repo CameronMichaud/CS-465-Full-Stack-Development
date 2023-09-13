@@ -1,0 +1,14 @@
+[
+    {
+        "page": "rooms",
+        "image": "rooms.png"
+    },
+    {
+        "page": "travel",
+        "image": "dive-site.png"
+    },
+    {
+        "page": "meals",
+        "image": "food.png"
+    }
+]
