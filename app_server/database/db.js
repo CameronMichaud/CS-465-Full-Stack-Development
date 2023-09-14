@@ -6,7 +6,7 @@ const readline = require('readline');
 //console.log(dbURI);
 
 // avoid 'current Server Discovery and Monitoring engine is deprecated'
-mongoose.set('useUnifiedTopology', true);
+//mongoose.set('useUnifiedTopology', true);
 
 const connect = () => {
     setTimeout(() => mongoose.connect(dbURI, {
@@ -66,4 +66,4 @@ process.once('SIGTERM', () => {
 connect();
 
 // Bring in Mongoose schema
-require('./travlr');
+require('./models/travlr');
