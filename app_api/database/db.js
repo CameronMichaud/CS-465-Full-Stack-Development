@@ -1,9 +1,7 @@
 const mongoose = require('mongoose');
 const host = process.env.DB_HOST || '127.0.0.1'
-const dbURI = `mongodb://${host}/travlr`;
-const readLine = require('readline');
-
-//console.log(dbURI);
+const dbURI =  `mongodb://${host}/travlr`;
+const readline = require('readline');
 
 // avoid 'current Server Discovery and Monitoring engine is deprecated'
 //mongoose.set('useUnifiedTopology', true);
@@ -26,7 +24,7 @@ mongoose.connection.on('disconnected', () => {
 });    
 
 if (process.platform == 'win32') {
-    const rl = readLine.createInterface ({
+    const rl = readline.createInterface ({
         input: process.stdin,
         output: process.stdout
         });
@@ -52,13 +50,6 @@ process.once('SIGUSR2', () => {
 // For app termination
 process.once('SIGINT', () => {
     gracefulShutdown('app termination', () => {          
-        process.exit(0);                                   
-    });
-});
-
-// For Meroku app termination
-process.once('SIGTERM', () => {
-    gracefulShutdown('Heroku app shutdown', () => {          
         process.exit(0);                                   
     });
 });
