@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from "@angular/router";
 import { TripDataService } from '../services/trip-data.service';
 import { Trip } from '../models/trip';
+import { ChangeDetectorRef } from '@angular/core';
 
 @Component({
   selector: 'app-trip-listing',
@@ -17,7 +18,8 @@ export class TripListingComponent implements OnInit {
 
   constructor(
     private tripDataService: TripDataService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
     ) { }
   
   private addTrip(): void {
@@ -25,15 +27,14 @@ export class TripListingComponent implements OnInit {
     this.router.navigate(['add-trip']);
   }
 
-  private getTrips(): void {
-    console.log('Inside TripListingComponent#getTrips');
+  public getTrips(): void {
     this.message = 'Searching for trips';
-    this.tripDataService
-      .getTrips()
-        .then(foundTrips => {
-            this.message = foundTrips.length > 0 ? '' : 'No trips found';
-            this.trips = foundTrips;
-        });
+    this.tripDataService.getTrips()
+      .then(trips => {
+        this.message = trips.length > 0 ? '' : 'No trips found';
+        this.trips = trips;
+        this.cdr.detectChanges();  // Trigger Refresh
+    });
   }
 
   ngOnInit() {

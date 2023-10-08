@@ -8,6 +8,7 @@ import { TripDataService } from '../services/trip-data.service';
   templateUrl: './add-trip.component.html',
   styleUrls: ['./add-trip.component.css']
 })
+
 export class AddTripComponent implements OnInit {
     addForm: FormGroup; 
     submitted = false; 
@@ -40,5 +41,5 @@ export class AddTripComponent implements OnInit {
         this.router.navigate(['']); 
       }); 
     } 
-  } // get the form short name to access the form fields get f() { return this.addForm.controls; }
+  } 
 }

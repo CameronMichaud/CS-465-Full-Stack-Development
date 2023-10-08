@@ -12,6 +12,11 @@ export class TripDataService {
   private apiBaseUrl = 'http://localhost:3000/api/';
   private tripUrl = `${this.apiBaseUrl}trips/`;
 
+  /* ----------------------------------------------------------------------------------------------
+   * API Interactions || CRUD, Create, Read, Update Delete. (ADD, GET, PUT, DELETE)
+   * ----------------------------------------------------------------------------------------------
+   */
+
   public addTrip(formData: Trip): Promise<Trip> {
     console.log('Inside TripDataService#addTrip');
     return this.httpClient
@@ -48,6 +53,14 @@ export class TripDataService {
       .put(this.tripUrl + tripCode, formData)
       .toPromise()
       .then(response => response as Trip[])
+      .catch(this.handleError);
+  }
+  public deleteTrip(tripCode: string): Promise<Trip> {
+    console.log('Inside TripDataService#deleteTrip(tripCode)');
+    return this.httpClient
+      .delete(this.tripUrl + tripCode)
+      .toPromise()
+      .then(response => response as Trip)
       .catch(this.handleError);
   }
 
