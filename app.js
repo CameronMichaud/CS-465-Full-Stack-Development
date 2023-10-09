@@ -1,22 +1,43 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// Expose env variables
+require('dotenv').config();
+
+/* ----------------------------------------------------------------------------------------------
+* Imports 
+* ----------------------------------------------------------------------------------------------
+*/
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const hbs = require('hbs');
+const passport = require('passport');
+
+// Start MongoDB
 require('./app_api/database/db');
 
-var indexRouter = require('./app_server/routes/index');
-var usersRouter = require('./app_server/routes/users');
-var travelRouter = require('./app_server/routes/travel');
-var aboutRouter = require('./app_server/routes/about');
-var contactRouter = require('./app_server/routes/contact');
-var mealsRouter = require('./app_server/routes/meals');
-var newsRouter = require('./app_server/routes/news');
-var roomsRouter = require('./app_server/routes/rooms');
+// Register passport
+require('./app_api/config/passport');
+
+/* ----------------------------------------------------------------------------------------------
+* Routes 
+* ----------------------------------------------------------------------------------------------
+*/
+const indexRouter = require('./app_server/routes/index');
+const usersRouter = require('./app_server/routes/users');
+const travelRouter = require('./app_server/routes/travel');
+const aboutRouter = require('./app_server/routes/about');
+const contactRouter = require('./app_server/routes/contact');
+const mealsRouter = require('./app_server/routes/meals');
+const newsRouter = require('./app_server/routes/news');
+const roomsRouter = require('./app_server/routes/rooms');
 const apiRouter = require('./app_api/routes/index');
 
-var app = express();
+/* ----------------------------------------------------------------------------------------------
+* Initialization 
+* ----------------------------------------------------------------------------------------------
+*/
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'app_server', 'views'));
@@ -31,14 +52,17 @@ app.use(cookieParser());
 // Serves static HTML
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Allow CORS
+app.use(passport.initialize());
+
+// Allow Cross-Origin-Resource-Sharing (CORS)
 app.use('/api', (req, res, next) => {
   res.header('Access-Control-Allow-Origin', 'http://localhost:4200');
-  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
   res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE');
   next();
 });
 
+// Define route control for different URLs
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/travel', travelRouter);
@@ -57,6 +81,7 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
+  
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};

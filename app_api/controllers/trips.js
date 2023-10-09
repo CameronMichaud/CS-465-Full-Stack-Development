@@ -1,14 +1,43 @@
 const mongoose = require('mongoose');
-const model = mongoose.model('trips');
+const Trip = mongoose.model('trips');
+const User = mongoose.model('users');
+
+const getUser = (req, res, callback) => {
+    console.log("Get User callback");
+    if (req.payload && req.payload.email) {
+        console.log("Get User callback, payload: " + req.payload.email);
+        User
+            .findOne({ email: req.payload.email })
+            .exec((err, user) => {
+                if (!user) {
+                    return res
+                        .status(404)
+                        .json({ "message": "User not found" });
+                } else if (err) {
+                    console.log(err);
+                    return res
+                        .status(404)
+                        .json(err);
+                }
+                callback(req, res, user.name);
+            });
+    } else {
+        console.log("Get User callback, payload: " + req.payload);
+        return res
+            .status(404)
+            .json({ "message": "User not found" });
+
+    }
+};
 
 const tripsList = async (req, res) => {
-    model
+    Trip
         .find({}) // Empty filter for all
-        .exec((err, trips) => {
-            if (!trips) {
+        .exec((err, Trips) => {
+            if (!Trips) {
                 return res
                     .status(404)
-                    .json({ "message": "trip not found" });
+                    .json({ "message": "Trip not found" });
             } else if (err) {
                 return res
                     .status(404)
@@ -16,20 +45,20 @@ const tripsList = async (req, res) => {
             } else {
                 return res
                     .status(200)
-                    .json(trips);
+                    .json(Trips);
             }
         });
 };
 
-// GET: /trips/tripCode - return a single trip
+// GET: /Trips/TripCode - return a single Trip
 const tripsFindCode = async (req, res) => {
-    model
-        .find({ 'code': req.params.tripCode })
-        .exec((err, trip) => {
-            if (!trip) {
+    Trip
+        .find({ 'code': req.params.TripCode })
+        .exec((err, Trip) => {
+            if (!Trip) {
                 return res
                     .status(404)
-                    .json({ "message": "trip not found" });
+                    .json({ "message": "Trip not found" });
             } else if (err) {
                 return res
                     .status(404)
@@ -37,14 +66,15 @@ const tripsFindCode = async (req, res) => {
             } else {
                 return res
                     .status(200)
-                    .json(trip);
+                    .json(Trip);
             }
         });
 };
 
-// POST: add trip
+// POST: add Trip
 const tripsAddTrip = async (req, res) => {
-    model
+    getUser(req, res, (req, res) => {
+    Trip
     .create({
         code: req.body.code,
         name: req.body.name,
@@ -55,7 +85,7 @@ const tripsAddTrip = async (req, res) => {
         image: req.body.image,
         description: req.body.description
     },
-    (err, trip) => {
+    (err, Trip) => {
         if (err) {
             return res
                 .status(400)
@@ -63,15 +93,17 @@ const tripsAddTrip = async (req, res) => {
         } else {
             return res
                 .status(201) // Created
-                .json(trip);
+                .json(Trip);
         }
     });
+  })
 }
 
-// PUT: update trip
+// PUT: update Trip
 const tripsUpdateTrip = async (req, res) => {
-    model
-        .findOneAndUpdate({ 'code': req.params.tripCode}, {
+    getUser(req, res, (req, res) => {
+    Trip
+        .findOneAndUpdate({ 'code': req.params.TripCode}, {
             code: req.body.code,
             name: req.body.name,
             length: req.body.length,
@@ -81,33 +113,35 @@ const tripsUpdateTrip = async (req, res) => {
             image: req.body.image,
             description: req.body.description
         }, { new: true})
-            .then(trip => {
-                if (!trip) {
+            .then(Trip => {
+                if (!Trip) {
                     return res
                         .status(404)
                         .send({
-                            message: "Trip not found with code " + req.params.tripCode
+                            message: "Trip not found with code " + req.params.TripCode
                         });
                     }
-                    res.send(trip);
+                    res.send(Trip);
             }).catch(err => {
                 if (err.kind === "ObjectId") {
                     return res
                         .status(404)
                         .send({
-                            message: "Trip not found with code " + req.params.tripCode
+                            message: "Trip not found with code " + req.params.TripCode
                         })
                 }
                 return res
                     .status(500) // Server error
                     .json(err);
             });
+        })
 }
 
-// DELETE: delete trip
+// DELETE: delete Trip
 const tripsDeleteTrip = async (req, res) => {
-    model
-        .deleteOne({ 'code': req.params.tripCode }, (err, result) => {
+    getUser(req, res, (req, res) => {
+    Trip
+        .deleteOne({ 'code': req.params.TripCode }, (err, result) => {
             if (err) {
                 return res.status(500).json(err); // Server Error
             }
@@ -118,6 +152,7 @@ const tripsDeleteTrip = async (req, res) => {
 
             return res.status(204).send(); // Deletion succeeded, no content
         });
+    })
 }
 
 module.exports = { // Export functions for routes/index.js
