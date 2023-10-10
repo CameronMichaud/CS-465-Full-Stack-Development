@@ -3,6 +3,7 @@ import { Router } from "@angular/router";
 import { TripDataService } from '../services/trip-data.service';
 import { Trip } from '../models/trip';
 import { ChangeDetectorRef } from '@angular/core';
+import { AuthenticationService } from '../services/authentication';
 
 @Component({
   selector: 'app-trip-listing',
@@ -19,8 +20,14 @@ export class TripListingComponent implements OnInit {
   constructor(
     private tripDataService: TripDataService,
     private router: Router,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private authenticationService: AuthenticationService
+  
     ) { }
+  
+  private isLoggedIn(): boolean {
+    return this.authenticationService.isLoggedIn();
+  }
   
   private addTrip(): void {
     console.log('Inside TripListingComponent#addTrip');
