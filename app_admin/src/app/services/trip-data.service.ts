@@ -23,7 +23,6 @@ export class TripDataService {
    */
 
   public addTrip(formData: Trip): Promise<Trip> {
-    console.log('Inside TripDataService#addTrip');
     return this.httpClient
       .post(this.tripUrl, formData, { headers: this.getHeaders() })
       .toPromise()
@@ -32,7 +31,6 @@ export class TripDataService {
   }
 
   public getTrip(tripCode: string): Promise<Trip> { 
-    console.log('Inside TripDataService#getTrip(tripCode)'); 
     return this.httpClient
     .get(this.tripUrl + tripCode)
     .toPromise()
@@ -41,7 +39,6 @@ export class TripDataService {
   }
 
   public getTrips(): Promise<Trip[]> {
-    console.log('Inside TripDataService#getTrips');
     return this.httpClient
       .get(`${this.apiBaseUrl}trips`)
       .toPromise()
@@ -50,10 +47,6 @@ export class TripDataService {
   }
 
   public updateTrip(tripCode: string, formData: Trip): Promise<Trip> {
-    console.log('Inside TripDataService#updateTrip');
-    console.log('Update Trip got:', formData);
-    console.log('Code property exists:', 'code' in formData);
-    console.log('URL:', this.tripUrl + tripCode, formData);
     return this.httpClient
       .put(this.tripUrl + tripCode, formData, { headers: this.getHeaders() })
       .toPromise()
@@ -61,10 +54,6 @@ export class TripDataService {
       .catch(this.handleError);
   }
   public deleteTrip(tripCode: string): Promise<Trip> {
-    console.log('Inside TripDataService#deleteTrip(tripCode)');
-    console.log("TripCode: " + tripCode);
-    console.log('URL: ', this.tripUrl + tripCode);
-    console.log('Headers: ', this.getHeaders());
     return this.httpClient
       .delete(this.tripUrl + tripCode, { headers: this.getHeaders() })
       .toPromise()
@@ -83,7 +72,6 @@ export class TripDataService {
   */
   private getHeaders(): HttpHeaders {
     const token = this.storage.getItem('travlr-token');
-    console.log("Token: " + token);
 
     // Add the token to the headers
     const headers = new HttpHeaders({
@@ -103,7 +91,6 @@ export class TripDataService {
   }
 
   public makeAuthApiCall(urlPath: string, user: User): Promise<AuthResponse> {
-    console.log("Making Auth Api Call");
     const url: string = `${this.apiBaseUrl}/${urlPath}`;
     return this.httpClient
       .post(url, user)

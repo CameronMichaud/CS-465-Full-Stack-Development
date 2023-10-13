@@ -7,9 +7,8 @@ passport.use(new LocalStrategy({
     usernameField: 'email'
 },
 (username, password, done) => {
-    console.log('Finding username');
     User.findOne({ email: username }, (err, user) => {
-        if (err) { console.log('Error occured'); return done(err); }
+        if (err) { return done(err); }
         if (!user) {
             return done(null, false, {
                 message: "Incorrect username."
@@ -20,7 +19,6 @@ passport.use(new LocalStrategy({
                 message: "Incorrect password."
             });
         }
-        console.log('Returned?');
         return done(null, user);
     });
 }));

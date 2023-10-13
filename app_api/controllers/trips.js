@@ -3,19 +3,15 @@ const Trip = mongoose.model('trips');
 const User = mongoose.model('users');
 
 const getUser = (req, res, callback) => {
-    console.log("Entered getUser()");
     if (req.auth && req.auth.email) {
-        console.log("Valid, auth: " + req.auth);
         User
             .findOne({ email: req.auth.email })
             .exec((err, user) => {
                 if (!user) {
-                    console.log("Not found, auth: " + req.auth);
                     return res
                         .status(404)
                         .json({ "message": "User not found" });
                 } else if (err) {
-                    console.log(err);
                     return res
                         .status(404)
                         .json(err);
@@ -140,7 +136,6 @@ const tripsUpdateTrip = async (req, res) => {
 // DELETE: delete Trip
 const tripsDeleteTrip = async (req, res) => {
     getUser(req, res, (req, res) => {
-        console.log("TripCode: " + req.params.tripCode);
     Trip
         .deleteOne({ 'code': req.params.tripCode }, (err, result) => {
             if (err) {

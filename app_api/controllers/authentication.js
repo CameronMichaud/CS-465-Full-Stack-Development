@@ -27,22 +27,18 @@ const register = (req, res) => {
 };
 
 const login = (req, res) => {
-    console.log('In login function');
     if (!req.body.email || !req.body.password) {
-        console.log('Some field is invalid');
         return res
             .status(400)
             .json({ "message": "All fields required" });
     }
     passport.authenticate('local', (err, user, info) => {
-        console.log('In authenticate function');
         if (err) {
             return res
                 .status(404)
                 .json(err);
         }
         if (user) {
-            console.log('Creating token');
             const token = user.generateJwt();
             res
                 .status(200)
